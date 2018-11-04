@@ -21,7 +21,7 @@ namespace NetworkSimulation
             this.floor = floor;
             this.x = x;
             this.y = y;
-            tiles[x, y] = 1;
+            tiles[floor, x, y] = 1;
         }
         
         public int GetFloor()

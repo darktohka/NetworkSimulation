@@ -22,11 +22,11 @@ namespace NetworkSimulation
         private int objectId;
         [JsonProperty("name")]
         private string name;
-        [JsonProperty("ipAddress")]
+        [JsonProperty("ipAddress")]//USER INPUT
         private string ipAddress;
-        [JsonProperty("uploadMbps")]
+        [JsonProperty("uploadMbps")]//USER INPUT
         private double uploadMbps;
-        [JsonProperty("downloadMbps")]
+        [JsonProperty("downloadMbps")]//USER INPUT
         private double downloadMbps;
         [JsonProperty("throttledUploadMbps")]
         private double throttledUploadMbps;
@@ -36,7 +36,7 @@ namespace NetworkSimulation
         private int avgPingRate;
         [JsonProperty("packetLossChance")]
         private int packetLossChance;
-        [JsonProperty("maxConnections")]
+        [JsonProperty("maxConnections")]//USER INPUT OR SET
         private int maxConnections;
 
         // Computers
@@ -56,7 +56,7 @@ namespace NetworkSimulation
         private string subnet;
 
         public NetworkObject(ObjectType objectType, int objectId, string name, int floor, int x, int y, string ipAddress, double uploadMbps, double downloadMbps, double throttledUploadMbps, double throttledDownloadMbps, int avgPingRate, int packetLossChance, int maxConnections, double uploadMbpsUsage, double downloadMbpsUsage, ComputerType computerType, bool wifiEnabled, double wifiRange, string subnet) : base(floor , x, y)
-        {
+        {//MOST ARE USER INPUT THRU UI===WAKE UP DISYER
             this.objectType = objectType;
             this.objectId = objectId;
             this.name = name;
@@ -80,15 +80,22 @@ namespace NetworkSimulation
         {
             // TODO
             // Walk the graph, and see if we are connected to a modem.
+            
+            
             UpdateStrength(); //UPDATE MBPS WHEN CONNECT - WE NEED TO FIGURE OUT EACH ACTION
             // If not connected to a modem through the graph, check every router and wifi dropoff here!!!
             if (objectType == ObjectType.MODEM)
             {
                 return true;
             }
-            foreach(NetworkObject obj in Settings.GetSingleton().GetObjects())//BILL WALKED THE GRAPH!
+            foreach (NetworkObject i in Settings.GetSingleton().GetObjects())
             {
-                if (DistanceTo(obj) > obj.GetWifiRange()) return true;
+                if (i.GetObjectType == 3 || i.GetObjectType == 4)
+                    if (DistanceTo(i) <= i.GetWifiRange())
+                    {
+
+                        return true;
+                    }
             }
             // Walk the graph now!
             if (!wifiEnabled)

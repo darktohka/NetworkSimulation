@@ -4,18 +4,18 @@ namespace NetworkSimulation
 {
     public class FloorLayout
     {
-        public int[,] tiles;
+        public int[,,] tiles;
         [JsonProperty("maxX")]
         private int maxX;
 
         [JsonProperty("maxY")]
         private int maxY;
 
-        public FloorLayout(int maxX, int maxY)
+        public FloorLayout(int floor, int maxX, int maxY)
         {
             this.maxX = maxX;
             this.maxY = maxY;
-            tiles = new int[maxX,maxY];
+            tiles = new int[floor, maxX,maxY];
         }
         public void ScaleFloor(int x, int y)//WE NEED TO TAKE INPUT FROM THE USER SCALING IT
         {
