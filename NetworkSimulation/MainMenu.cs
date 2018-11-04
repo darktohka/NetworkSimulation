@@ -20,6 +20,8 @@ namespace NetworkSimulation
         private void button2_Click(object sender, EventArgs e)
         {
             FloorChooser fc = new FloorChooser();
+            fc.ShowDialog();
+            Close();
         }
     }
 }
