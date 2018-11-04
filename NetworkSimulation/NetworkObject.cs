@@ -21,7 +21,6 @@ namespace NetworkSimulation
         private double uploadMbps;
         [JsonProperty("downloadMbps")]
         private double downloadMbps;
-        //delta action
         [JsonProperty("throttledUploadMbps")]
         private double throttledUploadMbps;
         [JsonProperty("throttledDownloadMbps")]
@@ -74,6 +73,7 @@ namespace NetworkSimulation
         {
             // TODO
             // Walk the graph, and see if we are connected to a modem.
+            if (CanConnect()) return true;
             // If not connected to a modem through the graph, check every router and wifi dropoff here!!!
             if (objectType == ObjectType.MODEM)
             {
@@ -88,7 +88,27 @@ namespace NetworkSimulation
             // Check all routers for dropoff!
             return false;
         }
-
+        
+        public bool CanConnect()//BILL MADE THIS
+        {
+            bool temp = false;
+            wifis = Settings.GetSingleton().GetObjects();
+            if(objectType == 6)
+            {
+                foreach(NetworkObject No in wifis) {
+                    if (No.GetObjectType() == 3 || No.GetObjectType() == 4)
+                    {
+                        if (DistanceTo(No) < No.GetWifiRange())
+                            temp = true;
+                    }
+                }
+            }
+            return temp;   
+        }
+        public float DistanceTo(NetworkObject other)//BILL MADE THIS
+        {
+            return Math.sqrt(Math.pow(other.GetX() - GetX(), 2) + Math.pow(other.GetY() - GetY(), 2));
+        }
         public ObjectType GetObjectType()
         {
             return objectType;
