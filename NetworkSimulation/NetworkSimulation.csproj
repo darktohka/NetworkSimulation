@@ -52,6 +52,12 @@
     <Compile Include="Action.cs" />
     <Compile Include="ComputerType.cs" />
     <Compile Include="ConnectionState.cs" />
+    <Compile Include="FloorExplorer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FloorExplorer.Designer.cs">
+      <DependentUpon>FloorExplorer.cs</DependentUpon>
+    </Compile>
     <Compile Include="FloorLayout.cs" />
     <Compile Include="FloorChooser.cs">
       <SubType>Form</SubType>
@@ -78,8 +84,13 @@
     <EmbeddedResource Include="FloorChooser.resx">
       <DependentUpon>FloorChooser.cs</DependentUpon>
     </EmbeddedResource>
+<<<<<<< HEAD
     <EmbeddedResource Include="MainMenu.resx">
       <DependentUpon>MainMenu.cs</DependentUpon>
+=======
+    <EmbeddedResource Include="FloorExplorer.resx">
+      <DependentUpon>FloorExplorer.cs</DependentUpon>
+>>>>>>> 29b25b154e4075f99bd97dbbadb8b25bd1d8c1bf
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -89,6 +100,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -103,6 +115,30 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="wifi.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="computer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="hub.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="modem.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="powerline.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="router.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="switch.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="wall.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

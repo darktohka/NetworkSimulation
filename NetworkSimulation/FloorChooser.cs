@@ -52,6 +52,19 @@ namespace NetworkSimulation
             ReloadFloors();
         }
 
+        private void openButton_Click(object sender, EventArgs e)
+        {
+            if (floorBox.SelectedIndex == -1)
+            {
+                return;
+            }
+
+            FloorExplorer explorer = new FloorExplorer(floorBox.SelectedIndex);
+            Hide();
+            explorer.ShowDialog();
+            Close();
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             int maxX = (int) floorWidthNum.Value;
