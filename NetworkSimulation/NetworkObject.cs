@@ -103,6 +103,48 @@ namespace NetworkSimulation
             return null;
         }
 
+        public List<int> GetGraphTrace()
+        {
+            List<int> fWalk = new List<int>();
+            fWalk.Add(GetObjectId());
+
+            if (GetObjectType() == ObjectType.MODEM)
+            {
+                return fWalk;
+            }
+
+            Queue<GraphWalk> walks = new Queue<GraphWalk>();
+            walks.Enqueue(new GraphWalk(GetObjectId(), fWalk));
+
+            while (walks.Count > 0)
+            {
+                GraphWalk walk = walks.Dequeue();
+                int currentId = walk.currentId;
+                List<NetworkObject> objects = Settings.GetSingleton().GetConnectedObjects(currentId);
+
+                foreach (NetworkObject obj in objects)
+                {
+                    ObjectType type = obj.GetObjectType();
+
+                    if (type == ObjectType.MODEM)
+                    {
+                        List<int> newList = new List<int>(walk.history);
+                        newList.Add(currentId);
+                        return newList;
+                    }
+
+                    if (type == ObjectType.HUB || type == ObjectType.SWITCH || type == ObjectType.POWERLINE || type == ObjectType.ROUTER)
+                    {
+                        List<int> newList = new List<int>(walk.history);
+                        newList.Add(currentId);
+                        walks.Enqueue(new GraphWalk(GetObjectId(), newList));
+                    }
+                }
+            }
+
+            return fWalk;
+        }
+
         public ConnectionState RecalcConnectionState()
         {
             // If connected to a modem, we have internet
@@ -272,9 +314,25 @@ namespace NetworkSimulation
 
         public int GetFinalPingRate()
         {
-            // TODO
-            // Walk the graph, and add all the ping rates together.
-            return avgPingRate;
+            if (connectionState == ConnectionState.DISCONNECTED)
+            {
+                return GetAvgPingRate();
+            }
+
+            int pingRate = 0;
+            List<int> trace = GetGraphTrace();
+
+            foreach (int objectId in trace)
+            {
+                NetworkObject obj = Settings.GetSingleton().GetObject(objectId);
+
+                if (obj != null)
+                {
+                    pingRate += obj.GetAvgPingRate();
+                }
+            }
+
+            return pingRate;
         }
 
         public int GetPacketLossChance()
@@ -289,10 +347,39 @@ namespace NetworkSimulation
 
         public int GetFinalPacketLossChance()
         {
-            // TODO
-            // Walk the graph, and multiply all packet loss chances together.
-            // 100% packet loss chance should mean instant 100% return, however.
-            return packetLossChance;
+            if (connectionState == ConnectionState.DISCONNECTED)
+            {
+                return GetPacketLossChance();
+            }
+
+            int allPacketLossChance = 0;
+            int packetLossNum = 0;
+            List<int> trace = GetGraphTrace();
+
+            foreach (int objectId in trace)
+            {
+                NetworkObject obj = Settings.GetSingleton().GetObject(objectId);
+
+                if (obj != null)
+                {
+                    if (obj.GetPacketLossChance() >= 100)
+                    {
+                        return 100;
+                    }
+
+                    packetLossChance += obj.GetPacketLossChance();
+                    packetLossNum += 1;
+                }
+            }
+
+            if (packetLossNum == 0)
+            {
+                return 0;
+            }
+            else
+            {
+                return (int) Math.Floor((double) allPacketLossChance / packetLossNum);
+            }
         }
 
         public double GetUploadMbpsUsage()
@@ -315,20 +402,56 @@ namespace NetworkSimulation
             this.downloadMbpsUsage = Math.Min(GetTrueDownloadMbps(), downloadMbpsUsage);
         }
 
-        public bool IsOverusingUpload()
+        // This returns the total upload mbps usage for the ENTIRE subgraph
+        public MbpsUsage GetTotalUploadMbpsUsage()
         {
-            // TODO
-            // Walk the graph, and see if we're using too much upload.
-            return false;
+            if (connectionState == ConnectionState.DISCONNECTED)
+            {
+                return new MbpsUsage(GetUploadMbpsUsage(), 0.0);
+            }
+
+            double totalMbps = 0.0;
+            List<int> trace = GetGraphTrace();
+
+            foreach (int objectId in trace)
+            {
+                NetworkObject obj = Settings.GetSingleton().GetObject(objectId);
+
+                if (obj != null)
+                {
+                    totalMbps += obj.GetUploadMbpsUsage();
+                }
+            }
+
+            double maxMbps = Settings.GetSingleton().GetObject(trace[trace.Count - 1]).GetTrueUploadMbps();
+            return new MbpsUsage(totalMbps, maxMbps);
+        }
+   
+        // This returns the total download mbps usage for the ENTIRE subgraph
+        public MbpsUsage GetTotalDownloadMbpsUsage()
+        {
+            if (connectionState == ConnectionState.DISCONNECTED)
+            {
+                return new MbpsUsage(GetDownloadMbpsUsage(), 0.0);
+            }
+
+            double totalMbps = 0.0;
+            List<int> trace = GetGraphTrace();
+
+            foreach (int objectId in trace)
+            {
+                NetworkObject obj = Settings.GetSingleton().GetObject(objectId);
+
+                if (obj != null)
+                {
+                    totalMbps += obj.GetDownloadMbpsUsage();
+                }
+            }
+
+            double maxMbps = Settings.GetSingleton().GetObject(trace[trace.Count - 1]).GetTrueDownloadMbps();
+            return new MbpsUsage(totalMbps, maxMbps);
         }
 
-        public bool IsOverusingDownload()
-        {
-            // TODO
-            // Walk the graph, and see if we're using too much download.
-            return false;
-        }
-        
         public ComputerType GetComputerType()
         {
             return computerType;
@@ -366,6 +489,7 @@ namespace NetworkSimulation
                 // TODO
                 // Walk graph and find subnet
                 // For example: computers, power lines, etc...
+                return "unknown";
             }
 
             return subnet;
