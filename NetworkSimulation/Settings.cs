@@ -233,5 +233,26 @@ namespace NetworkSimulation
                 }
             }
         }
+
+        public bool IsSpaceEmpty(int floor, int x, int y)
+        {
+            foreach (NetworkObject obj in objects)
+            {
+                if (obj.GetFloor() == floor && obj.GetX() == x && obj.GetY() == y)
+                {
+                    return false;
+                }
+            }
+
+            foreach (Wall wall in walls)
+            {
+                if (wall.GetFloor() == floor && wall.GetX() == x && wall.GetY() == y)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
     }
 }
