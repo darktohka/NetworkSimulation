@@ -80,11 +80,15 @@ namespace NetworkSimulation
         {
             // TODO
             // Walk the graph, and see if we are connected to a modem.
-            
+            UpdateStrength(); //UPDATE MBPS WHEN CONNECT - WE NEED TO FIGURE OUT EACH ACTION
             // If not connected to a modem through the graph, check every router and wifi dropoff here!!!
             if (objectType == ObjectType.MODEM)
             {
                 return true;
+            }
+            foreach(NetworkObject obj in Settings.GetSingleton().GetObjects())//BILL WALKED THE GRAPH!
+            {
+                if (DistanceTo(obj) > obj.GetWifiRange()) return true;
             }
             // Walk the graph now!
             if (!wifiEnabled)
