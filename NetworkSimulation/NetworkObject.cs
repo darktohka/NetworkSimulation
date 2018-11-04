@@ -99,6 +99,10 @@ namespace NetworkSimulation
             // Check all routers for dropoff!
             return false;
         }
+        public void setID()
+        {
+            if (!isWall) layout.tiles[x, y] = GetObjectId();
+        }
         public double UpStrength()
         {
             return newUpSpeed() * wifiCoeff;//KEVIN HAS FORMULA

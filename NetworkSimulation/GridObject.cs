@@ -4,6 +4,7 @@ namespace NetworkSimulation
 {
     public class GridObject
     {
+        
         [JsonProperty("floor")]
         private int floor;
 
@@ -13,11 +14,14 @@ namespace NetworkSimulation
         [JsonProperty("y")]
         private int y;
 
+        public bool isWall;
+
         public GridObject(int floor, int x, int y)
-        {
+        { 
             this.floor = floor;
             this.x = x;
             this.y = y;
+            tiles[x, y] = 1;
         }
         
         public int GetFloor()

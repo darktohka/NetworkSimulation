@@ -4,6 +4,7 @@ namespace NetworkSimulation
 {
     public class FloorLayout
     {
+        public int[,] tiles;
         [JsonProperty("maxX")]
         private int maxX;
 
@@ -14,12 +15,14 @@ namespace NetworkSimulation
         {
             this.maxX = maxX;
             this.maxY = maxY;
+            tiles = new int[maxX,maxY];
         }
         public void ScaleFloor(int x, int y)//WE NEED TO TAKE INPUT FROM THE USER SCALING IT
         {
             SetMaxX(x);
             SetMaxY(y);
         }
+        
         public int GetMaxX()
         {
             return maxX;
@@ -42,10 +45,8 @@ namespace NetworkSimulation
         public bool IsOccupied(int x, int y)
         {
             //DETECT IF THERE IS A GRIDOBJECT ON THIS SQUARE
-            foreach(GridObject obj in Settings.GetSingleton().GetObjects())
-            {
-                if (obj.GetX() == x && obj.GetY() == y) return true;
-            }return false;
+            return tiles[x, y] >0;
+            
         }
         public bool IsEnclosed(int x, int y)
         {

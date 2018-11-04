@@ -11,6 +11,7 @@ namespace NetworkSimulation
     {
         public Wall(int floor, int x, int y) : base(floor, x, y)
         {
+            isWall = true;
         }
     }
 }
