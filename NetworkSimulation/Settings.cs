@@ -65,6 +65,8 @@ namespace NetworkSimulation
                 MessageBox.Show("Couldn't save settings!", "Important!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
             }
+
+            GetSingleton().ReevaluateObjects();
         }
 
         public List<NetworkObject> GetObjects()

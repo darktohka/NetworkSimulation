@@ -184,6 +184,13 @@ namespace NetworkSimulation
                         numericUpDown9.Value = 0;
                         numericUpDown10.Value = 0;
                         activityName.Text = "";
+
+                        actionsBox.Items.Clear();
+
+                        foreach (Action action in networkObj.GetActions())
+                        {
+                            actionsBox.Items.Add(action.GetName());
+                        }
                     }
                 }
             }
@@ -472,6 +479,43 @@ namespace NetworkSimulation
                 gridObj.SetWifiEnabled(checkBox1.Checked);
                 Settings.SaveSettings();
             }
+        }
+
+        private void createActButton_Click(object sender, EventArgs e)
+        {
+            if (selectedPoint.X == -1)
+            {
+                return;
+            }
+
+            NetworkObject gridObj = (NetworkObject)GetGridObj(selectedPoint.X, selectedPoint.Y);
+            string name = activityName.Text;
+            int download = (int)numericUpDown9.Value;
+            int upload = (int) numericUpDown10.Value;
+
+            if (String.IsNullOrWhiteSpace(name))
+            {
+                MessageBox.Show("Please enter a name!");
+                return;
+            }
+
+            Action action = new Action(name, upload, download);
+            gridObj.AddAction(action);
+            actionsBox.Items.Add(name);
+            Settings.SaveSettings();
+        }
+
+        private void removeActButton_Click(object sender, EventArgs e)
+        {
+            if (selectedPoint.X == -1 || actionsBox.SelectedIndex == -1)
+            {
+                return;
+            }
+
+            NetworkObject gridObj = (NetworkObject)GetGridObj(selectedPoint.X, selectedPoint.Y);
+            gridObj.RemoveActionAt(actionsBox.SelectedIndex);
+            actionsBox.Items.RemoveAt(actionsBox.SelectedIndex);
+            Settings.SaveSettings();
         }
     }
 }

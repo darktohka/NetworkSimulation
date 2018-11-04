@@ -395,6 +395,14 @@ namespace NetworkSimulation
             return actions;
         }
 
+        public void RemoveActionAt(int index)
+        {
+            if (index < actions.Count)
+            {
+                actions.RemoveAt(index);
+            }
+        }
+
         public void AddAction(Action action)
         {
             if (!actions.Contains(action))

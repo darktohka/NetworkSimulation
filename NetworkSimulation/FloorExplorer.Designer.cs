@@ -417,6 +417,7 @@
             this.createActButton.TabIndex = 16;
             this.createActButton.Text = "Create";
             this.createActButton.UseVisualStyleBackColor = true;
+            this.createActButton.Click += new System.EventHandler(this.createActButton_Click);
             // 
             // removeActButton
             // 
@@ -427,6 +428,7 @@
             this.removeActButton.TabIndex = 17;
             this.removeActButton.Text = "Remove";
             this.removeActButton.UseVisualStyleBackColor = true;
+            this.removeActButton.Click += new System.EventHandler(this.removeActButton_Click);
             // 
             // z
             // 
@@ -570,7 +572,6 @@
             this.activityName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.activityName.Location = new System.Drawing.Point(190, 436);
             this.activityName.Name = "activityName";
-            this.activityName.ReadOnly = true;
             this.activityName.Size = new System.Drawing.Size(175, 20);
             this.activityName.TabIndex = 29;
             // 
