@@ -4,15 +4,13 @@ namespace NetworkSimulation
 {
     public class FloorLayout
     {
-        [JsonProperty("FloorNumber")]
-
-        //[JsonProperty("maxX")]
+        [JsonProperty("maxX")]
         private int maxX;
 
         [JsonProperty("maxY")]
         private int maxY;
 
-        public FloorLayout(int floor, int maxX, int maxY)
+        public FloorLayout(int maxX, int maxY)
         {
             this.maxX = maxX;
             this.maxY = maxY;

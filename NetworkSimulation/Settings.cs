@@ -194,11 +194,75 @@ namespace NetworkSimulation
             }
         }
 
-        public void RemoveFloor(FloorLayout floor)
+        public void RemoveFloor(int floorNum)
         {
-            if (floors.Contains(floor))
+            if (floorNum < floors.Count)
             {
-                floors.Remove(floor);
+                floors.RemoveAt(floorNum);
+            }
+
+            List<NetworkObject> removeObjs = new List<NetworkObject>();
+            List<Wall> removeWalls = new List<Wall>();
+
+            foreach (NetworkObject obj in GetObjects())
+            {
+                // Remove all objects on this floor
+                if (obj.GetFloor() == floorNum)
+                {
+                    removeObjs.Add(obj);
+                }
+
+                // Shift all objects down by one floor
+                if (obj.GetFloor() > floorNum)
+                {
+                    obj.SetFloor(obj.GetFloor() - 1);
+                }
+            }
+
+            foreach (Wall wall in GetWalls())
+            {
+                // Remove all walls on this floor
+                if (wall.GetFloor() == floorNum)
+                {
+                    removeWalls.Add(wall);
+                }
+
+                // Shift all walls down by one floor
+                if (wall.GetFloor() > floorNum)
+                {
+                    wall.SetFloor(wall.GetFloor() - 1);
+                }
+            }
+
+            foreach (NetworkObject obj in removeObjs)
+            {
+                RemoveObject(obj);
+            }
+            
+            foreach (Wall wall in removeWalls)
+            {
+                RemoveWall(wall);
+            }
+
+            // Remove all orphaned cables
+            RemoveOrphanedCables();
+        }
+
+        public void RemoveOrphanedCables()
+        {
+            List<NetworkCable> removeCables = new List<NetworkCable>();
+
+            foreach (NetworkCable cable in GetCables())
+            {
+                if (cable.GetFrom() == null || cable.GetTo() == null)
+                {
+                    removeCables.Add(cable);
+                }
+            }
+
+            foreach (NetworkCable cable in removeCables)
+            {
+                RemoveNetworkCable(cable);
             }
         }
 

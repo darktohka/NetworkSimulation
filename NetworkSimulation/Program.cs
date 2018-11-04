@@ -17,7 +17,7 @@ namespace NetworkSimulation
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Settings.LoadSettings();
-            Application.Run(new Form1());
+            Application.Run(new FloorChooser());
         }
     }
 }
