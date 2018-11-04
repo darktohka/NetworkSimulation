@@ -96,6 +96,11 @@ namespace NetworkSimulation
                     Wall wall = new Wall(floor, point.X, point.Y);
                     Settings.GetSingleton().AddWall(wall);
                     Settings.SaveSettings();
+                } else
+                {
+                    NetworkObject obj = new NetworkObject(dragType, Settings.GetSingleton().AllocateObjectId(), "Object", floor, point.X, point.Y, 100.0, 100.0, 0.0, 0.0, 5, 0, 3, new List<Action>(), ComputerType.WORKSTATION, true, 10.0);
+                    Settings.GetSingleton().AddObject(obj);
+                    Settings.SaveSettings();
                 }
 
                 ReloadPictures();

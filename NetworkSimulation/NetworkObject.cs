@@ -16,8 +16,6 @@ namespace NetworkSimulation
         private int objectId;
         [JsonProperty("name")]
         private string name;
-        [JsonProperty("ipAddress")]//USER INPUT
-        private string ipAddress;
         [JsonProperty("uploadMbps")]//USER INPUT
         private double uploadMbps;
         [JsonProperty("downloadMbps")]//USER INPUT
@@ -44,19 +42,16 @@ namespace NetworkSimulation
         // Routers and wifi extenders
         [JsonProperty("wifiRange")]
         private double wifiRange;
-        [JsonProperty("subnet")]
-        private string subnet;
 
         // Temporary variables
         public ConnectionState connectionState;
         public double wifiDropoff = 1.0D;
 
-        public NetworkObject(ObjectType objectType, int objectId, string name, int floor, int x, int y, string ipAddress, double uploadMbps, double downloadMbps, double throttledUploadMbps, double throttledDownloadMbps, int avgPingRate, int packetLossChance, int maxConnections, List<Action> actions, ComputerType computerType, bool wifiEnabled, double wifiRange, string subnet) : base(floor , x, y)
+        public NetworkObject(ObjectType objectType, int objectId, string name, int floor, int x, int y, double uploadMbps, double downloadMbps, double throttledUploadMbps, double throttledDownloadMbps, int avgPingRate, int packetLossChance, int maxConnections, List<Action> actions, ComputerType computerType, bool wifiEnabled, double wifiRange) : base(floor , x, y)
         {//MOST ARE USER INPUT THRU UI===WAKE UP DISYER
             this.objectType = objectType;
             this.objectId = objectId;
             this.name = name;
-            this.ipAddress = ipAddress;
             this.uploadMbps = uploadMbps;
             this.downloadMbps = downloadMbps;
             this.throttledUploadMbps = throttledUploadMbps;
@@ -68,7 +63,6 @@ namespace NetworkSimulation
             this.computerType = computerType;
             this.wifiEnabled = wifiEnabled;
             this.wifiRange = wifiRange;
-            this.subnet = subnet;
         }
 
         // WARNING!!! CALL THIS IF ANYTHING CHANGES!!
@@ -231,16 +225,6 @@ namespace NetworkSimulation
         public int GetObjectId()
         {
             return objectId;
-        }
-
-        public string GetIpAddress()
-        {
-            return ipAddress;
-        }
-
-        public void SetIpAddress(string ipAddress)
-        {
-            this.ipAddress = ipAddress;
         }
 
         private double GetTrueMbps(double realMbps, double throttledMbps)
@@ -540,25 +524,7 @@ namespace NetworkSimulation
         {
             this.wifiRange = wifiRange;
         }
-
-        public string GetSubnet()
-        {
-            if (subnet == null)
-            {
-                // TODO
-                // Walk graph and find subnet
-                // For example: computers, power lines, etc...
-                return "unknown";
-            }
-
-            return subnet;
-        }
-
-        public void SetSubnet(string subnet)
-        {
-            this.subnet = subnet;
-        }
-
+   
         public string GetName()
         {
             return name;
