@@ -16,6 +16,7 @@ namespace NetworkSimulation
         public int floor;
         public Dictionary<Point, PictureBox> buttons = new Dictionary<Point, PictureBox>();
         public ObjectType dragType = ObjectType.NONE;
+        public Point selectedPoint = new Point(-1, -1);
 
         public FloorExplorer(int floor)
         {
@@ -28,6 +29,11 @@ namespace NetworkSimulation
         {
             this.Text = "Floor #" + (floor + 1);
             ReloadGrid();
+
+            foreach (Control control in groupBox2.Controls)
+            {
+                control.Hide();
+            }
         }
 
         private void groupBox1_Enter(object sender, EventArgs e)
@@ -89,6 +95,8 @@ namespace NetworkSimulation
             Point point = new Point(button.MinimumSize.Width, button.MinimumSize.Height);
             GridObject gridObj = GetGridObj(point.X, point.Y);
 
+            DeselectPoint();
+
             if (gridObj == null)
             {
                 if (this.dragType == ObjectType.WALL)
@@ -96,15 +104,88 @@ namespace NetworkSimulation
                     Wall wall = new Wall(floor, point.X, point.Y);
                     Settings.GetSingleton().AddWall(wall);
                     Settings.SaveSettings();
-                } else
+                } else if (this.dragType != ObjectType.NONE)
                 {
                     NetworkObject obj = new NetworkObject(dragType, Settings.GetSingleton().AllocateObjectId(), "Object", floor, point.X, point.Y, 100.0, 100.0, 0.0, 0.0, 5, 0, 3, new List<Action>(), ComputerType.WORKSTATION, true, 10.0);
                     Settings.GetSingleton().AddObject(obj);
                     Settings.SaveSettings();
                 }
-
+                
                 ReloadPictures();
                 StopDragAndDrop();
+            } else
+            {
+                selectedPoint = point;
+
+                button1.Show();
+
+                if (gridObj is Wall)
+                {
+                    groupBox2.Text = "Wall";
+                }
+                else if (gridObj is NetworkObject)
+                {
+                    NetworkObject networkObj = ((NetworkObject)gridObj);
+                    groupBox2.Text = networkObj.GetName();
+                    ObjectType type = networkObj.GetObjectType();
+
+                    if (type == ObjectType.ROUTER || type == ObjectType.WIFI_EXTENDER)
+                    {
+                        wifiRangeLabel.Show();
+                        numericUpDown8.Show();
+                        numericUpDown8.Value = (int) networkObj.GetWifiRange();
+                    }
+
+                    z.Show();
+                    label1.Show();
+                    label2.Show();
+                    label3.Show();
+                    label4.Show();
+                    label5.Show();
+                    label6.Show();
+                    label7.Show();
+                    label8.Show();
+                    numericUpDown1.Show();
+                    numericUpDown2.Show();
+                    numericUpDown3.Show();
+                    numericUpDown4.Show();
+                    numericUpDown5.Show();
+                    numericUpDown6.Show();
+                    numericUpDown7.Show();
+                    z.Text = networkObj.GetObjectTypeName();
+                    numericUpDown1.Value = (int)networkObj.uploadMbps;
+                    numericUpDown2.Value = (int)networkObj.downloadMbps;
+                    numericUpDown3.Value = (int)networkObj.throttledUploadMbps;
+                    numericUpDown4.Value = (int)networkObj.throttledDownloadMbps;
+                    numericUpDown5.Value = networkObj.GetAvgPingRate();
+                    numericUpDown6.Value = networkObj.GetPacketLossChance();
+                    numericUpDown7.Value = networkObj.GetMaxConnections();
+
+                    if (type == ObjectType.COMPUTER)
+                    {
+                        wifiEnabledLabel.Show();
+                        computerTypeLabel.Show();
+                        actionsLabel.Show();
+                        actionsBox.Show();
+                        newActionLabel.Show();
+                        activityLabel.Show();
+                        downloadActLabel.Show();
+                        uploadActLabel.Show();
+                        createActButton.Show();
+                        removeActButton.Show();
+                        checkBox1.Show();
+                        comboBox1.Show();
+                        numericUpDown9.Show();
+                        numericUpDown10.Show();
+                        activityName.Show();
+
+                        checkBox1.Checked = networkObj.GetWifiEnabled();
+                        comboBox1.SelectedIndex = (int) networkObj.GetComputerType();
+                        numericUpDown9.Value = 0;
+                        numericUpDown10.Value = 0;
+                        activityName.Text = "";
+                    }
+                }
             }
         }
 
@@ -238,6 +319,159 @@ namespace NetworkSimulation
         private void pictureBox7_Click(object sender, EventArgs e)
         {
             StartDragAndDrop(ObjectType.WALL);
+        }
+
+        private void DeselectPoint()
+        {
+            foreach (Control control in groupBox2.Controls)
+            {
+                control.Hide();
+            }
+
+            groupBox2.Text = "Object";
+            selectedPoint = new Point(-1, -1);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (selectedPoint.X != -1)
+            {
+                GridObject gridObj = GetGridObj(selectedPoint.X, selectedPoint.Y);
+                Settings.GetSingleton().RemoveGridObject(gridObj);
+                Settings.SaveSettings();
+                ReloadPictures();
+                DeselectPoint();
+            }
+        }
+
+        private void label9_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void actionsBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void z_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBox2_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            if (selectedPoint.X != -1)
+            {
+                NetworkObject gridObj = (NetworkObject)GetGridObj(selectedPoint.X, selectedPoint.Y);
+                gridObj.SetComputerType((ComputerType) comboBox1.SelectedIndex);
+                Settings.SaveSettings();
+            }
+        }
+
+        private void numericUpDown8_ValueChanged(object sender, EventArgs e)
+        {
+
+            if (selectedPoint.X != -1)
+            {
+                NetworkObject gridObj = (NetworkObject)GetGridObj(selectedPoint.X, selectedPoint.Y);
+                gridObj.SetWifiRange((double)numericUpDown8.Value);
+                Settings.SaveSettings();
+            }
+        }
+
+        private void numericUpDown7_ValueChanged(object sender, EventArgs e)
+        {
+
+            if (selectedPoint.X != -1)
+            {
+                NetworkObject gridObj = (NetworkObject)GetGridObj(selectedPoint.X, selectedPoint.Y);
+                gridObj.SetMaxConnections((int)numericUpDown7.Value);
+                Settings.SaveSettings();
+            }
+        }
+
+        private void numericUpDown6_ValueChanged(object sender, EventArgs e)
+        {
+
+            if (selectedPoint.X != -1)
+            {
+                NetworkObject gridObj = (NetworkObject)GetGridObj(selectedPoint.X, selectedPoint.Y);
+                gridObj.SetPacketLossChance((int)numericUpDown6.Value);
+                Settings.SaveSettings();
+            }
+        }
+
+        private void numericUpDown5_ValueChanged(object sender, EventArgs e)
+        {
+
+            if (selectedPoint.X != -1)
+            {
+                NetworkObject gridObj = (NetworkObject)GetGridObj(selectedPoint.X, selectedPoint.Y);
+                gridObj.SetAvgPingRate((int) numericUpDown5.Value);
+                Settings.SaveSettings();
+            }
+        }
+
+        private void numericUpDown4_ValueChanged(object sender, EventArgs e)
+        {
+
+            if (selectedPoint.X != -1)
+            {
+                NetworkObject gridObj = (NetworkObject)GetGridObj(selectedPoint.X, selectedPoint.Y);
+                gridObj.throttledDownloadMbps = (double)numericUpDown4.Value;
+                Settings.SaveSettings();
+            }
+        }
+
+        private void numericUpDown3_ValueChanged(object sender, EventArgs e)
+        {
+
+            if (selectedPoint.X != -1)
+            {
+                NetworkObject gridObj = (NetworkObject)GetGridObj(selectedPoint.X, selectedPoint.Y);
+                gridObj.throttledUploadMbps = (double)numericUpDown3.Value;
+                Settings.SaveSettings();
+            }
+        }
+
+        private void numericUpDown2_ValueChanged(object sender, EventArgs e)
+        {
+
+            if (selectedPoint.X != -1)
+            {
+                NetworkObject gridObj = (NetworkObject)GetGridObj(selectedPoint.X, selectedPoint.Y);
+                gridObj.downloadMbps = (double)numericUpDown2.Value;
+                Settings.SaveSettings();
+            }
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+
+            if (selectedPoint.X != -1)
+            {
+                NetworkObject gridObj = (NetworkObject) GetGridObj(selectedPoint.X, selectedPoint.Y);
+                gridObj.uploadMbps = (double) numericUpDown1.Value;
+                Settings.SaveSettings();
+            }
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
+            if (selectedPoint.X != -1)
+            {
+                NetworkObject gridObj = (NetworkObject)GetGridObj(selectedPoint.X, selectedPoint.Y);
+                gridObj.SetWifiEnabled(checkBox1.Checked);
+                Settings.SaveSettings();
+            }
         }
     }
 }

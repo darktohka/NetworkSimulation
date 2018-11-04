@@ -17,13 +17,13 @@ namespace NetworkSimulation
         [JsonProperty("name")]
         private string name;
         [JsonProperty("uploadMbps")]//USER INPUT
-        private double uploadMbps;
+        public double uploadMbps;
         [JsonProperty("downloadMbps")]//USER INPUT
-        private double downloadMbps;
+        public double downloadMbps;
         [JsonProperty("throttledUploadMbps")]
-        private double throttledUploadMbps;
+        public double throttledUploadMbps;
         [JsonProperty("throttledDownloadMbps")]
-        private double throttledDownloadMbps;
+        public double throttledDownloadMbps;
         [JsonProperty("avgPingRate")]
         private int avgPingRate;
         [JsonProperty("packetLossChance")]
@@ -560,6 +560,45 @@ namespace NetworkSimulation
                     return Properties.Resources.wifi;
                 default:
                     return Properties.Resources.empty;
+            }
+        }
+        public string GetObjectTypeName()
+        {
+            switch (GetObjectType())
+            {
+                case ObjectType.COMPUTER:
+                    return "Computer";
+                case ObjectType.HUB:
+                    return "Hub";
+                case ObjectType.MODEM:
+                    return "Modem";
+                case ObjectType.POWERLINE:
+                    return "Powerline";
+                case ObjectType.ROUTER:
+                    return "Router";
+                case ObjectType.SWITCH:
+                    return "Switch";
+                case ObjectType.WIFI_EXTENDER:
+                    return "WiFi Extender";
+                default:
+                    return "Unknown";
+            }
+        }
+
+        public String GetComputerTypeName()
+        {
+            switch (GetComputerType())
+            {
+                case ComputerType.MEDIA_SERVER:
+                    return "Media Server";
+                case ComputerType.RASPBERRY_PI:
+                    return "Raspberry Pi";
+                case ComputerType.SERVER:
+                    return "Server";
+                case ComputerType.WORKSTATION:
+                    return "Workstation";
+                default:
+                    return "Unknown";
             }
         }
     }
