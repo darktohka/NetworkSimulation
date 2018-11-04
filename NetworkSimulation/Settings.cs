@@ -340,9 +340,26 @@ namespace NetworkSimulation
                 if (cable.GetFromId() == objectId)
                 {
                     objs.Add(cable.GetTo());
-                } else if (cable.GetToId() == objectId)
+                }
+                else if (cable.GetToId() == objectId)
                 {
                     objs.Add(cable.GetFrom());
+                }
+            }
+
+            return objs;
+        }
+
+
+        public List<NetworkCable> GetConnections(int objectId)
+        {
+            List<NetworkCable> objs = new List<NetworkCable>();
+
+            foreach (NetworkCable cable in cables)
+            {
+                if (cable.GetFromId() == objectId || cable.GetToId() == objectId)
+                {
+                    objs.Add(cable);
                 }
             }
 

@@ -94,17 +94,22 @@ namespace NetworkSimulation
             PictureBox button = (PictureBox) sender;
             Point point = new Point(button.MinimumSize.Width, button.MinimumSize.Height);
             GridObject gridObj = GetGridObj(point.X, point.Y);
-
+            
             DeselectPoint();
 
             if (gridObj == null)
             {
+                if (this.dragType == ObjectType.WIRE)
+                {
+                    return;
+                }
                 if (this.dragType == ObjectType.WALL)
                 {
                     Wall wall = new Wall(floor, point.X, point.Y);
                     Settings.GetSingleton().AddWall(wall);
                     Settings.SaveSettings();
-                } else if (this.dragType != ObjectType.NONE)
+                }
+                else if (this.dragType != ObjectType.NONE)
                 {
                     NetworkObject obj = new NetworkObject(dragType, Settings.GetSingleton().AllocateObjectId(), "Object", floor, point.X, point.Y, 100.0, 100.0, 0.0, 0.0, 5, 0, 3, new List<Action>(), ComputerType.WORKSTATION, true, 10.0);
                     Settings.GetSingleton().AddObject(obj);
@@ -115,6 +120,17 @@ namespace NetworkSimulation
                 StopDragAndDrop();
             } else
             {
+                if (dragType == ObjectType.WIRE)
+                {
+                    if (gridObj is NetworkObject) {
+                        NetworkObject networkObj = (NetworkObject)gridObj;
+                        ConnectionForm form = new ConnectionForm(networkObj.GetObjectId());
+                        form.ShowDialog();
+                    }
+
+                    return;
+                }
+
                 selectedPoint = point;
 
                 button1.Show();
@@ -228,11 +244,24 @@ namespace NetworkSimulation
 
         public void EnableDragAndDrop()
         {
-            foreach (PictureBox box in buttons.Values)
+            ReloadPictures();
+            if (dragType == ObjectType.WIRE)
             {
-                if (GetGridObj(box.MinimumSize.Width, box.MinimumSize.Height) == null)
+                foreach (PictureBox box in buttons.Values)
                 {
-                    box.BackgroundImage = Properties.Resources.free_space;
+                    GridObject obj = GetGridObj(box.MinimumSize.Width, box.MinimumSize.Height);
+                    if (obj != null && obj is NetworkObject)
+                    {
+                        box.BackgroundImage = Properties.Resources.free_space;
+                    }
+                }
+            } else {
+                foreach (PictureBox box in buttons.Values)
+                {
+                    if (GetGridObj(box.MinimumSize.Width, box.MinimumSize.Height) == null)
+                    {
+                        box.BackgroundImage = Properties.Resources.free_space;
+                    }
                 }
             }
         }
@@ -279,6 +308,10 @@ namespace NetworkSimulation
         private void pictureBox7_Paint(object sender, PaintEventArgs e)
         {
             DrawHighlightText(e, "Wall", pictureBox7);
+        }
+        private void pictureBox8_Paint(object sender, PaintEventArgs e)
+        {
+            DrawHighlightText(e, "Wire", pictureBox8);
         }
 
         public void StartDragAndDrop(ObjectType objectType)
@@ -329,6 +362,10 @@ namespace NetworkSimulation
         private void pictureBox7_Click(object sender, EventArgs e)
         {
             StartDragAndDrop(ObjectType.WALL);
+        }
+        private void pictureBox8_Click(object sender, EventArgs e)
+        {
+            StartDragAndDrop(ObjectType.WIRE);
         }
 
         private void DeselectPoint()

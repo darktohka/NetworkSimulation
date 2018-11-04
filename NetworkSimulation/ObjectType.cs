@@ -16,6 +16,7 @@ namespace NetworkSimulation
         POWERLINE = 5,
         COMPUTER = 6,
         WALL = 7,
-        NONE = 8
+        NONE = 8,
+        WIRE = 9
     }
 }

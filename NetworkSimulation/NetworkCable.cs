@@ -61,5 +61,16 @@ namespace NetworkSimulation
         {
             Settings.GetSingleton().RemoveNetworkCable(this);
         }
+
+        public NetworkObject GetSecondObject(NetworkObject first)
+        {
+            if (GetFromId() == first.GetObjectId())
+            {
+                return GetTo();
+            } else
+            {
+                return GetFrom();
+            }
+        }
     }
 }
