@@ -153,6 +153,7 @@ namespace NetworkSimulation
                     }
 
                     z.Show();
+                    button2.Show();
                     label1.Show();
                     label2.Show();
                     label3.Show();
@@ -568,6 +569,18 @@ namespace NetworkSimulation
                 Settings.SaveSettings();
                 groupBox2.Text = textBox1.Text;
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (selectedPoint.X == -1)
+            {
+                return;
+            }
+
+            NetworkObject gridObj = (NetworkObject)GetGridObj(selectedPoint.X, selectedPoint.Y);
+            SimulationForm form = new SimulationForm(gridObj.GetObjectId());
+            form.ShowDialog();
         }
     }
 }

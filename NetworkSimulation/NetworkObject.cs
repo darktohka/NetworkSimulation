@@ -127,9 +127,12 @@ namespace NetworkSimulation
 
                     if (type == ObjectType.HUB || type == ObjectType.SWITCH || type == ObjectType.POWERLINE || type == ObjectType.ROUTER)
                     {
-                        List<int> newList = new List<int>(walk.history);
-                        newList.Add(currentId);
-                        walks.Enqueue(new GraphWalk(GetObjectId(), newList));
+                        if (!walk.history.Contains(currentId))
+                        {
+                            List<int> newList = new List<int>(walk.history);
+                            newList.Add(currentId);
+                            walks.Enqueue(new GraphWalk(GetObjectId(), newList));
+                        }
                     }
                 }
             }
@@ -148,6 +151,7 @@ namespace NetworkSimulation
 
             Queue<int> visitIds = new Queue<int>();
             visitIds.Enqueue(GetObjectId());
+            List<int> visited = new List<int>();
 
             while (visitIds.Count > 0)
             {
@@ -186,7 +190,11 @@ namespace NetworkSimulation
                             }
                         }
 
-                        visitIds.Enqueue(obj.GetObjectId());
+                        if (!visited.Contains(obj.GetObjectId()))
+                        {
+                            visitIds.Enqueue(obj.GetObjectId());
+                            visited.Add(obj.GetObjectId());
+                        }
                     }
                 }
             }
@@ -206,6 +214,21 @@ namespace NetworkSimulation
         public bool IsConnectedToInternet()
         {
             return connectionState != ConnectionState.DISCONNECTED;
+        }
+
+        public string GetConnectionStateString()
+        {
+            switch (connectionState)
+            {
+                case ConnectionState.DISCONNECTED:
+                    return "Disconnected";
+                case ConnectionState.CONNECTED_WIFI:
+                    return "Connected through Wi-Fi";
+                case ConnectionState.CONNECTED_CABLE:
+                    return "Connected through Ethernet";
+                default:
+                    return "Disconnected";
+            }
         }
 
         public double DistanceTo(NetworkObject other)//BILL MADE THIS
