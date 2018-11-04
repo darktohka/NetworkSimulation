@@ -116,13 +116,13 @@ namespace NetworkSimulation
                 return ConnectionState.CONNECTED_CABLE;
             }
 
-            int currentId = GetObjectId();
-            ObjectType currentType = GetObjectType();
+            Queue<int> visitIds = new Queue<int>();
+            visitIds.Enqueue(GetObjectId());
 
-            while (currentId != -1)
+            while (visitIds.Count > 0)
             {
+                int currentId = visitIds.Dequeue();
                 List<NetworkObject> objects = Settings.GetSingleton().GetConnectedObjects(currentId);
-                bool changed = false;
 
                 foreach (NetworkObject obj in objects) {
                     ObjectType type = obj.GetObjectType();
@@ -131,18 +131,32 @@ namespace NetworkSimulation
                     {
                         return ConnectionState.CONNECTED_CABLE;
                     }
-                    if (type == ObjectType.HUB || type == ObjectType.SWITCH || type == ObjectType.POWERLINE)
-                    {
-                        currentId = obj.GetObjectId();
-                        currentType = obj.GetObjectType();
-                        changed = true;
-                        break;
-                    }
-                }
 
-                if (!changed)
-                {
-                    break;
+                    if (type == ObjectType.HUB || type == ObjectType.SWITCH || type == ObjectType.POWERLINE || type == ObjectType.ROUTER)
+                    {
+                        if (type == ObjectType.POWERLINE)
+                        {
+                            // For powerlines, we must check if the powerline is connected to another powerline!
+                            List<NetworkObject> powerlineObjs = Settings.GetSingleton().GetConnectedObjects(obj.GetObjectId());
+                            bool hasPowerline = false;
+
+                            foreach (NetworkObject powerlineObj in powerlineObjs)
+                            {
+                                if (powerlineObj.GetObjectType() == ObjectType.POWERLINE)
+                                {
+                                    hasPowerline = true;
+                                    break;
+                                }
+                            }
+
+                            if (!hasPowerline)
+                            {
+                                continue;
+                            }
+                        }
+
+                        visitIds.Enqueue(obj.GetObjectId());
+                    }
                 }
             }
 
