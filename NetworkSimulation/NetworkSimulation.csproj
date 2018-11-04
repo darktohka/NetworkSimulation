@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComputerType.cs" />
+    <Compile Include="FloorLayout.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

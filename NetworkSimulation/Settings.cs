@@ -18,6 +18,9 @@ namespace NetworkSimulation
         [JsonProperty("walls")]
         private List<Wall> walls = new List<Wall>();
 
+        [JsonProperty("floors")]
+        private List<FloorLayout> floors = new List<FloorLayout>();
+
         [JsonProperty("nextObjectId")]
         private int nextObjectId = 0;
 
@@ -176,6 +179,38 @@ namespace NetworkSimulation
             {
                 RemoveWall((Wall)obj);
             }
+        }
+
+        public List<FloorLayout> GetFloors()
+        {
+            return floors;
+        }
+
+        public void AddFloor(FloorLayout floor)
+        {
+            if (!floors.Contains(floor))
+            {
+                floors.Add(floor);
+            }
+        }
+
+        public void RemoveFloor(FloorLayout floor)
+        {
+            if (floors.Contains(floor))
+            {
+                floors.Remove(floor);
+            }
+        }
+
+        public FloorLayout GetFloor(int floorNum)
+        {
+            // Starts from 0.
+            return floors[floorNum];
+        }
+
+        public int GetFloorCount()
+        {
+            return floors.Count;
         }
 
         public void RemoveGridObject(int floor, int x, int y)
