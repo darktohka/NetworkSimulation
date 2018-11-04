@@ -15,7 +15,11 @@ namespace NetworkSimulation
             this.maxX = maxX;
             this.maxY = maxY;
         }
-
+        public void ScaleFloor(int x, int y)//WE NEED TO TAKE INPUT FROM THE USER SCALING IT
+        {
+            SetMaxX(x);
+            SetMaxY(y);
+        }
         public int GetMaxX()
         {
             return maxX;
@@ -34,6 +38,19 @@ namespace NetworkSimulation
         public void SetMaxY(int maxY)
         {
             this.maxY = maxY;
+        }
+        public bool IsOccupied(int x, int y)
+        {
+            //DETECT IF THERE IS A GRIDOBJECT ON THIS SQUARE
+            foreach(GridObject obj in Settings.GetSingleton().GetObjects())
+            {
+                if (obj.GetX() == x && obj.GetY() == y) return true;
+            }return false;
+        }
+        public bool IsEnclosed(int x, int y)
+        {
+            //DETECT IF THERE ARE WALLS ON 4 SIDES
+            return false;
         }
     }
 }

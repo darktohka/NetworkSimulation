@@ -19,7 +19,7 @@ namespace NetworkSimulation
             this.x = x;
             this.y = y;
         }
-
+        
         public int GetFloor()
         {
             return floor;

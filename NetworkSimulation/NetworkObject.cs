@@ -13,9 +13,9 @@ namespace NetworkSimulation
         private float noise;
         [JsonProperty("wifiCoefficient")]//KEVIN HAS FORMULA
         private float wifiCoeff;
-        
         [JsonProperty("deltaAction")]
         private double deltaAct;
+        //THESE ARE DISYER'S
         [JsonProperty("objectType")]
         private ObjectType objectType;
         [JsonProperty("objectId")]
