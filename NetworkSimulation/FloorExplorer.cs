@@ -63,7 +63,6 @@ namespace NetworkSimulation
                     button.Size = new Size(incrementX, incrementY);
                     button.Location = new Point(currentX, currentY);
                     button.BackgroundImageLayout = ImageLayout.Stretch;
-                    button.BackgroundImage = Properties.Resources.empty;
                     Controls.Add(button);
                     buttons[new Point(i, j)] = button;
                     currentX += incrementX;
@@ -71,6 +70,35 @@ namespace NetworkSimulation
 
                 currentX = 280;
                 currentY += incrementY;
+            }
+
+            ReloadPictures();
+        }
+
+        public void ReloadPictures()
+        {
+            foreach (PictureBox box in buttons.Values)
+            {
+                UpdatePicture(box);
+            }
+        }
+
+        public void UpdatePicture(PictureBox box)
+        {
+            GridObject obj = Settings.GetSingleton().GetGridObject(floor, box.MinimumSize.Width, box.MinimumSize.Height);
+ 
+            if (obj == null)
+            {
+                box.BackgroundImage = Properties.Resources.empty;
+            }
+            else if (obj is Wall)
+            {
+                box.BackgroundImage = Properties.Resources.wall;
+            }
+            else if (obj is NetworkObject)
+            {
+                NetworkObject networkObj = (NetworkObject)obj;
+                box.BackgroundImage = networkObj.GetImage();
             }
         }
 

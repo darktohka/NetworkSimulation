@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace NetworkSimulation
 {
@@ -556,6 +557,29 @@ namespace NetworkSimulation
         public void RemoveObject()
         {
             Settings.GetSingleton().RemoveObject(this);
+        }
+
+        public Bitmap GetImage()
+        {
+            switch (GetObjectType())
+            {
+                case ObjectType.COMPUTER:
+                    return Properties.Resources.computer;
+                case ObjectType.HUB:
+                    return Properties.Resources.hub;
+                case ObjectType.MODEM:
+                    return Properties.Resources.modem;
+                case ObjectType.POWERLINE:
+                    return Properties.Resources.powerline;
+                case ObjectType.ROUTER:
+                    return Properties.Resources.router;
+                case ObjectType.SWITCH:
+                    return Properties.Resources._switch;
+                case ObjectType.WIFI_EXTENDER:
+                    return Properties.Resources.wifi;
+                default:
+                    return Properties.Resources.empty;
+            }
         }
     }
 }
