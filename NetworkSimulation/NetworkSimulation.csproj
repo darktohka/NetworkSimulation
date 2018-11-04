@@ -86,6 +86,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainMenu.resx">
       <DependentUpon>MainMenu.cs</DependentUpon>
+	</EmbeddedResource>
     <EmbeddedResource Include="FloorExplorer.resx">
       <DependentUpon>FloorExplorer.cs</DependentUpon>
     </EmbeddedResource>
