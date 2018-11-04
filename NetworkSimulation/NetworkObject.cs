@@ -33,10 +33,8 @@ namespace NetworkSimulation
         private int maxConnections;
 
         // Computers
-        [JsonProperty("uploadMbpsUsage")]
-        private double uploadMbpsUsage;
-        [JsonProperty("downloadMbpsUsage")]
-        private double downloadMbpsUsage;
+        [JsonProperty("actions")]
+        private List<Action> actions;
         [JsonProperty("computerType")]
         private ComputerType computerType;
         [JsonProperty("wifiEnabled")]
@@ -52,7 +50,7 @@ namespace NetworkSimulation
         public ConnectionState connectionState;
         public double wifiDropoff = 1.0D;
 
-        public NetworkObject(ObjectType objectType, int objectId, string name, int floor, int x, int y, string ipAddress, double uploadMbps, double downloadMbps, double throttledUploadMbps, double throttledDownloadMbps, int avgPingRate, int packetLossChance, int maxConnections, double uploadMbpsUsage, double downloadMbpsUsage, ComputerType computerType, bool wifiEnabled, double wifiRange, string subnet) : base(floor , x, y)
+        public NetworkObject(ObjectType objectType, int objectId, string name, int floor, int x, int y, string ipAddress, double uploadMbps, double downloadMbps, double throttledUploadMbps, double throttledDownloadMbps, int avgPingRate, int packetLossChance, int maxConnections, List<Action> actions, ComputerType computerType, bool wifiEnabled, double wifiRange, string subnet) : base(floor , x, y)
         {//MOST ARE USER INPUT THRU UI===WAKE UP DISYER
             this.objectType = objectType;
             this.objectId = objectId;
@@ -65,8 +63,7 @@ namespace NetworkSimulation
             this.avgPingRate = avgPingRate;
             this.packetLossChance = packetLossChance;
             this.maxConnections = maxConnections;
-            this.uploadMbpsUsage = uploadMbpsUsage;
-            this.downloadMbpsUsage = downloadMbpsUsage;
+            this.actions = actions;
             this.computerType = computerType;
             this.wifiEnabled = wifiEnabled;
             this.wifiRange = wifiRange;
@@ -387,26 +384,51 @@ namespace NetworkSimulation
             }
         }
 
-        public double GetUploadMbpsUsage()
+        public List<Action> GetActions()
         {
-            return uploadMbpsUsage;
+            return actions;
         }
 
-        public void SetUploadMbpsUsage(double uploadMbpsUsage)
+        public void AddAction(Action action)
         {
-            this.uploadMbpsUsage = Math.Min(GetTrueUploadMbps(), uploadMbpsUsage);
+            if (!actions.Contains(action))
+            {
+                actions.Add(action);
+            }
+        }
+
+        public void RemoveAction(Action action)
+        {
+            if (actions.Contains(action))
+            {
+                actions.Remove(action);
+            }
+        }
+
+        public double GetUploadMbpsUsage()
+        {
+            double mbps = 0;
+
+            foreach (Action action in actions)
+            {
+                mbps += action.GetDeltaUp();
+            }
+
+            return mbps;
         }
 
         public double GetDownloadMbpsUsage()
         {
-            return downloadMbpsUsage;
-        }
+            double mbps = 0;
 
-        public void SetDownloadMbpsUsage(double downloadMbpsUsage)
-        {
-            this.downloadMbpsUsage = Math.Min(GetTrueDownloadMbps(), downloadMbpsUsage);
-        }
+            foreach (Action action in actions)
+            {
+                mbps += action.GetDeltaDown();
+            }
 
+            return mbps;
+        }
+        
         // This returns the total upload mbps usage for the ENTIRE subgraph
         public MbpsUsage GetTotalUploadMbpsUsage()
         {

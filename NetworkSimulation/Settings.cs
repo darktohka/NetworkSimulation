@@ -264,6 +264,16 @@ namespace NetworkSimulation
             {
                 RemoveNetworkCable(cable);
             }
+
+            ReevaluateObjects();
+        }
+
+        public void ReevaluateObjects()
+        {
+            foreach (NetworkObject obj in GetObjects())
+            {
+                obj.RecalculateTemporary();
+            }
         }
 
         public FloorLayout GetFloor(int floorNum)
