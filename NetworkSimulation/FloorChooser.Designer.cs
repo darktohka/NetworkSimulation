@@ -155,6 +155,7 @@
             this.Controls.Add(this.button1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "FloorChooser";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Choose your floor!";
             this.Load += new System.EventHandler(this.FloorChooser_Load);
             ((System.ComponentModel.ISupportInitialize)(this.floorWidthNum)).EndInit();

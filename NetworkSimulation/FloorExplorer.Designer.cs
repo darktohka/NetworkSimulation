@@ -660,6 +660,7 @@
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "FloorExplorer";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FloorExplorer";
             this.Load += new System.EventHandler(this.FloorExplorer_Load);
             this.Click += new System.EventHandler(this.FloorExplorer_Click);
