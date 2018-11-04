@@ -319,6 +319,9 @@ namespace NetworkSimulation
             if (connectionState == ConnectionState.DISCONNECTED)
             {
                 return GetAvgPingRate();
+            } else if (connectionState == ConnectionState.CONNECTED_WIFI)
+            {
+                return GetAvgPingRate() + GetAssociatedRouter().GetFinalPingRate();
             }
 
             int pingRate = 0;
@@ -352,6 +355,9 @@ namespace NetworkSimulation
             if (connectionState == ConnectionState.DISCONNECTED)
             {
                 return GetPacketLossChance();
+            } else if (connectionState == ConnectionState.CONNECTED_WIFI)
+            {
+                return (GetPacketLossChance() + GetAssociatedRouter().GetFinalPacketLossChance()) / 2;
             }
 
             int allPacketLossChance = 0;
@@ -435,6 +441,11 @@ namespace NetworkSimulation
             if (connectionState == ConnectionState.DISCONNECTED)
             {
                 return new MbpsUsage(GetUploadMbpsUsage(), 0.0);
+            } else if (connectionState == ConnectionState.CONNECTED_WIFI)
+            {
+                MbpsUsage usage = GetAssociatedRouter().GetTotalUploadMbpsUsage();
+                usage.currentUsage += GetUploadMbpsUsage();
+                return usage;
             }
 
             double totalMbps = 0.0;
@@ -460,6 +471,11 @@ namespace NetworkSimulation
             if (connectionState == ConnectionState.DISCONNECTED)
             {
                 return new MbpsUsage(GetDownloadMbpsUsage(), 0.0);
+            } else if (connectionState == ConnectionState.CONNECTED_WIFI)
+            {
+                MbpsUsage usage = GetAssociatedRouter().GetTotalDownloadMbpsUsage();
+                usage.currentUsage += GetDownloadMbpsUsage();
+                return usage;
             }
 
             double totalMbps = 0.0;
