@@ -88,7 +88,15 @@ namespace NetworkSimulation
             // Check all routers for dropoff!
             return false;
         }
-        
+        public float ConnectTo(NetworkObject target)//BILL MADE THIS, returns modified speed - TODO
+        {
+            if (target.GetObjectType() == 3 || target.GetObjectType() == 4)
+            {//CONVERT MBPS TO PING RATE
+                if (IsConnectedToInternet) return (target.GetTrueMbps/*noise+deltaAct*/);
+            }
+            else return 0;
+        }
+        public 
         public bool CanConnect()//BILL MADE THIS
         {
             bool temp = false;
