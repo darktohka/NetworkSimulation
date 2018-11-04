@@ -153,6 +153,7 @@
             this.Controls.Add(this.floorWidthNum);
             this.Controls.Add(this.removeButton);
             this.Controls.Add(this.button1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "FloorChooser";
             this.Text = "Choose your floor!";
             this.Load += new System.EventHandler(this.FloorChooser_Load);
