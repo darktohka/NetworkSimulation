@@ -21,6 +21,7 @@ namespace NetworkSimulation
         private double uploadMbps;
         [JsonProperty("downloadMbps")]
         private double downloadMbps;
+        //delta action
         [JsonProperty("throttledUploadMbps")]
         private double throttledUploadMbps;
         [JsonProperty("throttledDownloadMbps")]
