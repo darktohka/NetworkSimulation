@@ -61,6 +61,12 @@
     </Compile>
     <Compile Include="GraphWalk.cs" />
     <Compile Include="GridObject.cs" />
+    <Compile Include="MainMenu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainMenu.Designer.cs">
+      <DependentUpon>MainMenu.cs</DependentUpon>
+    </Compile>
     <Compile Include="MbpsUsage.cs" />
     <Compile Include="NetworkCable.cs" />
     <Compile Include="NetworkObject.cs" />
@@ -71,6 +77,9 @@
     <Compile Include="Wall.cs" />
     <EmbeddedResource Include="FloorChooser.resx">
       <DependentUpon>FloorChooser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainMenu.resx">
+      <DependentUpon>MainMenu.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

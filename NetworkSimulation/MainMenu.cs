@@ -23,5 +23,10 @@ namespace NetworkSimulation
             fc.ShowDialog();
             Close();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //RUN SIMULATION
+        }
     }
 }
