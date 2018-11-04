@@ -15,6 +15,7 @@ namespace NetworkSimulation
         public FloorLayout layout;
         public int floor;
         public Dictionary<Point, PictureBox> buttons = new Dictionary<Point, PictureBox>();
+        public ObjectType dragType = ObjectType.NONE;
 
         public FloorExplorer(int floor)
         {
@@ -68,6 +69,7 @@ namespace NetworkSimulation
                     button.Size = new Size(incrementX, incrementY);
                     button.Location = new Point(currentX, currentY);
                     button.BackgroundImageLayout = ImageLayout.Stretch;
+                    button.Click += Button_Click;
                     Controls.Add(button);
                     buttons[new Point(i, j)] = button;
                     currentX += incrementX;
@@ -78,6 +80,14 @@ namespace NetworkSimulation
             }
 
             ReloadPictures();
+        }
+
+        private void Button_Click(object sender, EventArgs e)
+        {
+            // TODO: Open up the new box
+            PictureBox button = (PictureBox) sender;
+            Point point = new Point(button.MinimumSize.Width, button.MinimumSize.Height);
+            StopDragAndDrop();
         }
 
         public void ReloadPictures()
@@ -107,59 +117,109 @@ namespace NetworkSimulation
             }
         }
 
-        private void pictureBox1_Paint(object sender, PaintEventArgs e)
+        public void EnableDragAndDrop()
+        {
+            foreach (PictureBox box in buttons.Values)
+            {
+                if (GetGridObj(box.MinimumSize.Width, box.MinimumSize.Height) == null)
+                {
+                    box.BackgroundImage = Properties.Resources.free_space;
+                }
+            }
+        }
+   
+        private void FloorExplorer_Click(object sender, System.EventArgs e)
+        {
+            StopDragAndDrop();
+        }
+
+        public void DrawHighlightText(PaintEventArgs e, string text, PictureBox box)
         {
             using (Font myFont = new Font("Arial", 14))
             {
-                e.Graphics.DrawString("Switch", myFont, Brushes.Green, new Point(0, pictureBox1.Height - 25));
+                e.Graphics.DrawString(text, myFont, Brushes.Green, new Point(0, box.Height - 25));
             }
+        }
+
+        private void pictureBox1_Paint(object sender, PaintEventArgs e)
+        {
+            DrawHighlightText(e, "Switch", pictureBox1);
         }
         private void pictureBox2_Paint(object sender, PaintEventArgs e)
         {
-            using (Font myFont = new Font("Arial", 14))
-            {
-                e.Graphics.DrawString("Hub", myFont, Brushes.Green, new Point(0, pictureBox1.Height - 25));
-            }
+            DrawHighlightText(e, "Hub", pictureBox2);
         }
         private void pictureBox3_Paint(object sender, PaintEventArgs e)
         {
-            using (Font myFont = new Font("Arial", 14))
-            {
-                e.Graphics.DrawString("Router", myFont, Brushes.Green, new Point(0, pictureBox1.Height - 25));
-            }
+            DrawHighlightText(e, "Router", pictureBox3);
         }
         private void pictureBox4_Paint(object sender, PaintEventArgs e)
         {
-            using (Font myFont = new Font("Arial", 14))
-            {
-                e.Graphics.DrawString("Modem", myFont, Brushes.Green, new Point(0, pictureBox1.Height - 25));
-            }
+            DrawHighlightText(e, "Modem", pictureBox4);
         }
         private void pictureBox5_Paint(object sender, PaintEventArgs e)
         {
-            using (Font myFont = new Font("Arial", 14))
-            {
-                e.Graphics.DrawString("Computer", myFont, Brushes.Green, new Point(0, pictureBox1.Height - 25));
-            }
+            DrawHighlightText(e, "Computer", pictureBox5);
         }
+
         private void pictureBox6_Paint(object sender, PaintEventArgs e)
         {
-            using (Font myFont = new Font("Arial", 14))
-            {
-                e.Graphics.DrawString("Powerline", myFont, Brushes.Green, new Point(0, pictureBox1.Height - 25));
-            }
+            DrawHighlightText(e, "Powerline", pictureBox6);
         }
+
         private void pictureBox7_Paint(object sender, PaintEventArgs e)
         {
-            using (Font myFont = new Font("Arial", 14))
+            DrawHighlightText(e, "Wall", pictureBox7);
+        }
+
+        public void StartDragAndDrop(ObjectType objectType)
+        {
+            this.dragType = objectType;
+            EnableDragAndDrop();
+        }
+
+        public void StopDragAndDrop()
+        {
+            if (this.dragType != ObjectType.NONE)
             {
-                e.Graphics.DrawString("Wall", myFont, Brushes.Green, new Point(0, pictureBox1.Height - 25));
+                this.dragType = ObjectType.NONE;
+                ReloadPictures();
             }
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
+            StartDragAndDrop(ObjectType.SWITCH);
+        }
 
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+            StartDragAndDrop(ObjectType.HUB);
+        }
+
+        private void pictureBox4_Click(object sender, EventArgs e)
+        {
+            StartDragAndDrop(ObjectType.MODEM);
+        }
+
+        private void pictureBox3_Click(object sender, EventArgs e)
+        {
+            StartDragAndDrop(ObjectType.ROUTER);
+        }
+
+        private void pictureBox6_Click(object sender, EventArgs e)
+        {
+            StartDragAndDrop(ObjectType.POWERLINE);
+        }
+
+        private void pictureBox5_Click(object sender, EventArgs e)
+        {
+            StartDragAndDrop(ObjectType.COMPUTER);
+        }
+
+        private void pictureBox7_Click(object sender, EventArgs e)
+        {
+            StartDragAndDrop(ObjectType.WALL);
         }
     }
 }

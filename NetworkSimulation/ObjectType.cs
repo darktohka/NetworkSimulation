@@ -14,6 +14,8 @@ namespace NetworkSimulation
         ROUTER = 3,
         WIFI_EXTENDER = 4,
         POWERLINE = 5,
-        COMPUTER = 6
+        COMPUTER = 6,
+        WALL = 7,
+        NONE = 8
     }
 }
