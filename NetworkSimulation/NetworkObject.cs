@@ -11,8 +11,9 @@ namespace NetworkSimulation
     {
         //BILL MADE THESE
         private float noise;
-        [JsonProperty("averageSpeed")]
-        private double avgSpeed;
+        [JsonProperty("wifiCoefficient")]//KEVIN HAS FORMULA
+        private float wifiCoeff;
+        
         [JsonProperty("deltaAction")]
         private double deltaAct;
         [JsonProperty("objectType")]
@@ -94,13 +95,29 @@ namespace NetworkSimulation
             // Check all routers for dropoff!
             return false;
         }
-        
-        public double newSpeed()//BILL MADE THIS
+        public double UpStrength()
         {
-            return avgSpeed * noise + deltaAct;
+            return newUpSpeed() * wifiCoeff;//KEVIN HAS FORMULA
         }
-        
-        public float DistanceTo(NetworkObject other)//BILL MADE THIS
+        public double DownStrength()
+        {
+            return newDownSpeed() * wifiCoeff;//KEVIN HAS FORMULA
+        }
+        public void UpdateStrength()
+        {
+            throttledUploadMbps = UpStrength();
+            throttledDownloadMbps = DownStrength();
+        }
+        public double newUpSpeed()//BILL MADE THIS
+        {
+            return uploadMbps * noise + deltaAct;
+        }
+        public double newDownSpeed()//BILL MADE THIS
+        {
+            return downloadMbps * noise + deltaAct;
+        }
+
+        public double DistanceTo(NetworkObject other)//BILL MADE THIS
         {
             return Math.sqrt(Math.pow(other.GetX() - GetX(), 2) + Math.pow(other.GetY() - GetY(), 2));
         }
