@@ -215,7 +215,7 @@ namespace NetworkSimulation
 
         public double DistanceTo(NetworkObject other)//BILL MADE THIS
         {
-            return Math.Sqrt(Math.Pow(other.GetX() - GetX(), 2) + Math.Pow(other.GetY() - GetY(), 2));
+            return Math.Sqrt(Math.Pow(other.GetX() - GetX(), 2) + Math.Pow(other.GetY() - GetY(), 2) + Math.Pow(other.GetFloor() - GetFloor(), 2));
         }
         public ObjectType GetObjectType()
         {
