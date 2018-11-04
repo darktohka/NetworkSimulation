@@ -96,7 +96,7 @@ namespace NetworkSimulation
             }
             else return 0;
         }
-        public 
+        
         public bool CanConnect()//BILL MADE THIS
         {
             bool temp = false;
