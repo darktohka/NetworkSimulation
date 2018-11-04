@@ -86,7 +86,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainMenu.resx">
       <DependentUpon>MainMenu.cs</DependentUpon>
-	</EmbeddedResource>
+    </EmbeddedResource>
     <EmbeddedResource Include="FloorExplorer.resx">
       <DependentUpon>FloorExplorer.cs</DependentUpon>
     </EmbeddedResource>
@@ -137,6 +137,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="wall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="empty.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

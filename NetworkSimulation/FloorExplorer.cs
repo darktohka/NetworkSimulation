@@ -14,7 +14,7 @@ namespace NetworkSimulation
     {
         public FloorLayout layout;
         public int floor;
-        public List<Button> buttons;
+        public Dictionary<Point, PictureBox> buttons = new Dictionary<Point, PictureBox>();
 
         public FloorExplorer(int floor)
         {
@@ -34,9 +34,44 @@ namespace NetworkSimulation
 
         }
 
+        public PictureBox GetButton(int i, int j)
+        {
+            return buttons[new Point(i, j)];
+        }
+
         public void ReloadGrid()
         {
+            foreach (PictureBox button in buttons.Values)
+            {
+                Controls.Remove(button);
+            }
 
+            buttons.Clear();
+
+            int currentX = 280;
+            int currentY = 50;
+            int incrementX = (75 * 8) / layout.GetMaxY();
+            int incrementY = (75 * 8) / layout.GetMaxX();
+
+            for (int i = 0; i < layout.GetMaxX(); i++)
+            {
+                for (int j = 0; j < layout.GetMaxY(); j++)
+                {
+                    PictureBox button = new PictureBox();
+                    button.MinimumSize = new Size(i, j);
+                    button.Name = "grid-" + i + "-" + j;
+                    button.Size = new Size(incrementX, incrementY);
+                    button.Location = new Point(currentX, currentY);
+                    button.BackgroundImageLayout = ImageLayout.Stretch;
+                    button.BackgroundImage = Properties.Resources.empty;
+                    Controls.Add(button);
+                    buttons[new Point(i, j)] = button;
+                    currentX += incrementX;
+                }
+
+                currentX = 280;
+                currentY += incrementY;
+            }
         }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
