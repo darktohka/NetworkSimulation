@@ -8,10 +8,6 @@ namespace NetworkSimulation
     {
         //BILL MADE THESE
         private float noise;
-        [JsonProperty("wifiCoefficient")]//KEVIN HAS FORMULA
-        private float wifiCoeff;
-        [JsonProperty("deltaAction")]
-        private double deltaAct;
         //THESE ARE DISYER'S
         [JsonProperty("objectType")]
         private ObjectType objectType;
@@ -54,6 +50,7 @@ namespace NetworkSimulation
 
         // Temporary variables
         public ConnectionState connectionState;
+        public double wifiDropoff = 1.0D;
 
         public NetworkObject(ObjectType objectType, int objectId, string name, int floor, int x, int y, string ipAddress, double uploadMbps, double downloadMbps, double throttledUploadMbps, double throttledDownloadMbps, int avgPingRate, int packetLossChance, int maxConnections, double uploadMbpsUsage, double downloadMbpsUsage, ComputerType computerType, bool wifiEnabled, double wifiRange, string subnet) : base(floor , x, y)
         {//MOST ARE USER INPUT THRU UI===WAKE UP DISYER
@@ -76,10 +73,11 @@ namespace NetworkSimulation
             this.subnet = subnet;
         }
 
+        // WARNING!!! CALL THIS IF ANYTHING CHANGES!!
         public void RecalculateTemporary()
         {
-            connectionState = ConnectionState.DISCONNECTED;
-            IsConnectedToInternet();
+            wifiDropoff = 1.0D;
+            connectionState = RecalcConnectionState();
         }
 
         public NetworkObject GetAssociatedRouter()
@@ -96,6 +94,7 @@ namespace NetworkSimulation
                 {
                     if (DistanceTo(obj) <= obj.GetWifiRange())
                     {
+                        wifiDropoff = 1.0D / DistanceTo(obj);
                         return obj;
                     }
                 }
@@ -104,16 +103,13 @@ namespace NetworkSimulation
             return null;
         }
 
-        public ConnectionState GetConnectionState()
+        public ConnectionState RecalcConnectionState()
         {
-            // TODO
-            // Walk the graph, and see if we are connected to a modem.
-            
-            
             // If connected to a modem, we have internet
             if (objectType == ObjectType.MODEM)
             {
-                return ConnectionState.CONNECTED_CABLE;
+                connectionState = ConnectionState.CONNECTED_CABLE;
+                return connectionState;
             }
 
             Queue<int> visitIds = new Queue<int>();
@@ -129,7 +125,8 @@ namespace NetworkSimulation
 
                     if (type == ObjectType.MODEM)
                     {
-                        return ConnectionState.CONNECTED_CABLE;
+                        connectionState = ConnectionState.CONNECTED_CABLE;
+                        return connectionState;
                     }
 
                     if (type == ObjectType.HUB || type == ObjectType.SWITCH || type == ObjectType.POWERLINE || type == ObjectType.ROUTER)
@@ -163,16 +160,18 @@ namespace NetworkSimulation
             // If there is an associated router, we are connected through WiFi
             if (GetAssociatedRouter() != null)
             {
-                return ConnectionState.CONNECTED_WIFI;
+                connectionState = ConnectionState.CONNECTED_WIFI;
+                return connectionState;
             }
 
             // Disconnected
-            return ConnectionState.DISCONNECTED;
+            connectionState = ConnectionState.DISCONNECTED;
+            return connectionState;
         }
 
         public bool IsConnectedToInternet()
         {
-            return GetConnectionState() != ConnectionState.DISCONNECTED;
+            return connectionState != ConnectionState.DISCONNECTED;
         }
 
         public double DistanceTo(NetworkObject other)//BILL MADE THIS
@@ -206,15 +205,19 @@ namespace NetworkSimulation
 
         private double GetTrueMbps(double realMbps, double throttledMbps)
         {
-            if (throttledMbps >= 0)
+            double mbps = throttledMbps;
+
+            if (throttledMbps <= 0)
             {
-                return throttledMbps;
+                mbps = realMbps * 0.9;
             }
-            else
+
+            if (connectionState == ConnectionState.CONNECTED_WIFI)
             {
-                // The real mbps should cut off a bit.
-                return realMbps * 0.9;
+                mbps *= wifiDropoff;
             }
+
+            return mbps;
         }
 
         public double GetTrueUploadMbps()
