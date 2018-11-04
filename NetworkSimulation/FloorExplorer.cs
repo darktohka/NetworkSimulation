@@ -39,6 +39,11 @@ namespace NetworkSimulation
             return buttons[new Point(i, j)];
         }
 
+        public GridObject GetGridObj(int i, int j)
+        {
+            return Settings.GetSingleton().GetGridObject(floor, i, j);
+        }
+
         public void ReloadGrid()
         {
             foreach (PictureBox button in buttons.Values)
@@ -85,7 +90,7 @@ namespace NetworkSimulation
 
         public void UpdatePicture(PictureBox box)
         {
-            GridObject obj = Settings.GetSingleton().GetGridObject(floor, box.MinimumSize.Width, box.MinimumSize.Height);
+            GridObject obj = GetGridObj(box.MinimumSize.Width, box.MinimumSize.Height);
  
             if (obj == null)
             {
