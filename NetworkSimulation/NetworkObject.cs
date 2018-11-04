@@ -9,6 +9,12 @@ namespace NetworkSimulation
 {
     public class NetworkObject : GridObject
     {
+        //BILL MADE THESE
+        private float noise;
+        [JsonProperty("averageSpeed")]
+        private double avgSpeed;
+        [JsonProperty("deltaAction")]
+        private double deltaAct;
         [JsonProperty("objectType")]
         private ObjectType objectType;
         [JsonProperty("objectId")]
@@ -73,7 +79,7 @@ namespace NetworkSimulation
         {
             // TODO
             // Walk the graph, and see if we are connected to a modem.
-            if (CanConnect()) return true;
+            
             // If not connected to a modem through the graph, check every router and wifi dropoff here!!!
             if (objectType == ObjectType.MODEM)
             {
@@ -88,31 +94,12 @@ namespace NetworkSimulation
             // Check all routers for dropoff!
             return false;
         }
-        public float ConnectTo(NetworkObject target)//BILL MADE THIS, returns modified speed - TODO
+        
+        public double newSpeed()//BILL MADE THIS
         {
-            if (target.GetObjectType() == 3 || target.GetObjectType() == 4)
-            {//CONVERT MBPS TO PING RATE
-                if (IsConnectedToInternet) return (target.GetTrueMbps/*noise+deltaAct*/);
-            }
-            else return 0;
+            return avgSpeed * noise + deltaAct;
         }
         
-        public bool CanConnect()//BILL MADE THIS
-        {
-            bool temp = false;
-            wifis = Settings.GetSingleton().GetObjects();
-            if(objectType == 6)
-            {
-                foreach(NetworkObject No in wifis) {
-                    if (No.GetObjectType() == 3 || No.GetObjectType() == 4)
-                    {
-                        if (DistanceTo(No) < No.GetWifiRange())
-                            temp = true;
-                    }
-                }
-            }
-            return temp;   
-        }
         public float DistanceTo(NetworkObject other)//BILL MADE THIS
         {
             return Math.sqrt(Math.pow(other.GetX() - GetX(), 2) + Math.pow(other.GetY() - GetY(), 2));
