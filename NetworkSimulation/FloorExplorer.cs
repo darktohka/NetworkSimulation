@@ -582,5 +582,12 @@ namespace NetworkSimulation
             SimulationForm form = new SimulationForm(gridObj.GetObjectId());
             form.ShowDialog();
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Hide();
+            new FloorChooser().ShowDialog();
+            Close();
+        }
     }
 }
