@@ -15,6 +15,9 @@ namespace NetworkSimulation
         [JsonProperty("cables")]
         private List<NetworkCable> cables = new List<NetworkCable>();
 
+        [JsonProperty("walls")]
+        private List<Wall> walls = new List<Wall>();
+
         [JsonProperty("nextObjectId")]
         private int nextObjectId = 0;
 
@@ -141,6 +144,59 @@ namespace NetworkSimulation
             }
 
             return null;
+        }
+
+        public List<Wall> GetWalls()
+        {
+            return walls;
+        }
+
+        public void AddWall(Wall wall)
+        {
+            if (!walls.Contains(wall))
+            {
+                walls.Add(wall);
+            }
+        }
+
+        public void RemoveWall(Wall wall)
+        {
+            if (walls.Contains(wall))
+            {
+                walls.Remove(wall);
+            }
+        }
+
+        public void RemoveGridObject(GridObject obj)
+        {
+            if (obj is NetworkObject)
+            {
+                RemoveObject((NetworkObject)obj);
+            } else if (obj is Wall)
+            {
+                RemoveWall((Wall)obj);
+            }
+        }
+
+        public void RemoveGridObject(int floor, int x, int y)
+        {
+            foreach (NetworkObject obj in objects)
+            {
+                if (obj.GetFloor() == floor && obj.GetX() == x && obj.GetY() == y)
+                {
+                    RemoveObject(obj);
+                    break;
+                }
+            }
+
+            foreach (Wall wall in walls)
+            {
+                if (wall.GetFloor() == floor && wall.GetX() == x && wall.GetY() == y)
+                {
+                    RemoveWall(wall);
+                    break;
+                }
+            }
         }
     }
 }

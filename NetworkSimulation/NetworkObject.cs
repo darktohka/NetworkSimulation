@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace NetworkSimulation
 {
-    public class NetworkObject
+    public class NetworkObject : GridObject
     {
         [JsonProperty("objectType")]
         private ObjectType objectType;
@@ -15,12 +15,6 @@ namespace NetworkSimulation
         private int objectId;
         [JsonProperty("name")]
         private string name;
-        [JsonProperty("floor")]
-        private int floor;
-        [JsonProperty("x")]
-        private int x;
-        [JsonProperty("y")]
-        private int y;
         [JsonProperty("ipAddress")]
         private string ipAddress;
         [JsonProperty("uploadMbps")]
@@ -54,14 +48,11 @@ namespace NetworkSimulation
         [JsonProperty("subnet")]
         private string subnet;
 
-        public NetworkObject(ObjectType objectType, int objectId, string name, int floor, int x, int y, string ipAddress, double uploadMbps, double downloadMbps, double throttledUploadMbps, double throttledDownloadMbps, int avgPingRate, int packetLossChance, int maxConnections, double uploadMbpsUsage, double downloadMbpsUsage, ComputerType computerType, bool wifiEnabled, double wifiRange, string subnet)
+        public NetworkObject(ObjectType objectType, int objectId, string name, int floor, int x, int y, string ipAddress, double uploadMbps, double downloadMbps, double throttledUploadMbps, double throttledDownloadMbps, int avgPingRate, int packetLossChance, int maxConnections, double uploadMbpsUsage, double downloadMbpsUsage, ComputerType computerType, bool wifiEnabled, double wifiRange, string subnet) : base(floor , x, y)
         {
             this.objectType = objectType;
             this.objectId = objectId;
             this.name = name;
-            this.floor = floor;
-            this.x = x;
-            this.y = y;
             this.ipAddress = ipAddress;
             this.uploadMbps = uploadMbps;
             this.downloadMbps = downloadMbps;
@@ -110,36 +101,6 @@ namespace NetworkSimulation
         public int GetObjectId()
         {
             return objectId;
-        }
-
-        public int GetFloor()
-        {
-            return floor;
-        }
-
-        public void SetFloor(int floor)
-        {
-            this.floor = floor;
-        }
-
-        public int GetX()
-        {
-            return x;
-        }
-
-        public void SetX(int x)
-        {
-            this.x = x;
-        }
-
-        public int GetY()
-        {
-            return y;
-        }
-
-        public void SetY(int y)
-        {
-            this.y = y;
         }
 
         public string GetIpAddress()
