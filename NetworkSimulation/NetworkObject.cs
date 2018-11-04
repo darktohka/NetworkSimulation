@@ -391,6 +391,21 @@ namespace NetworkSimulation
             }
         }
 
+        public int GetMaxConnections()
+        {
+            return maxConnections;
+        }
+
+        public void SetMaxConnections(int maxConnections)
+        {
+            this.maxConnections = maxConnections;
+        }
+
+        public int GetConnectionCount()
+        {
+            return Settings.GetSingleton().GetConnectedObjects(GetObjectId()).Count;
+        }
+
         public List<Action> GetActions()
         {
             return actions;

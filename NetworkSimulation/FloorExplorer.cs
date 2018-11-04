@@ -87,7 +87,20 @@ namespace NetworkSimulation
             // TODO: Open up the new box
             PictureBox button = (PictureBox) sender;
             Point point = new Point(button.MinimumSize.Width, button.MinimumSize.Height);
-            StopDragAndDrop();
+            GridObject gridObj = GetGridObj(point.X, point.Y);
+
+            if (gridObj == null)
+            {
+                if (this.dragType == ObjectType.WALL)
+                {
+                    Wall wall = new Wall(floor, point.X, point.Y);
+                    Settings.GetSingleton().AddWall(wall);
+                    Settings.SaveSettings();
+                }
+
+                ReloadPictures();
+                StopDragAndDrop();
+            }
         }
 
         public void ReloadPictures()
