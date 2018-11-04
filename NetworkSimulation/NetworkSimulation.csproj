@@ -84,13 +84,10 @@
     <EmbeddedResource Include="FloorChooser.resx">
       <DependentUpon>FloorChooser.cs</DependentUpon>
     </EmbeddedResource>
-<<<<<<< HEAD
     <EmbeddedResource Include="MainMenu.resx">
       <DependentUpon>MainMenu.cs</DependentUpon>
-=======
     <EmbeddedResource Include="FloorExplorer.resx">
       <DependentUpon>FloorExplorer.cs</DependentUpon>
->>>>>>> 29b25b154e4075f99bd97dbbadb8b25bd1d8c1bf
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
