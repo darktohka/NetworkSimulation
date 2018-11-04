@@ -1,19 +1,53 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace NetworkSimulation
 {
     public class Action
     {
-        private string Name;
-        private int DeltaUp, DeltaDown;
-        public Action(int dup, ddown)
+        [JsonProperty("name")]
+        private string name;
+
+        [JsonProperty("deltaUp")]
+        private int deltaUp;
+
+        [JsonProperty("deltaDown")]
+        private int deltaDown;
+
+        public Action(string name, int deltaUp, int deltaDown)
         {
-            DeltaUp = dup;
-            DeltaDown = DeltaDown;
+            this.name = name;
+            this.deltaUp = deltaUp;
+            this.deltaDown = deltaDown;
+        }
+
+        public string GetName()
+        {
+            return name;
+        }
+        
+        public void SetName(string name)
+        {
+            this.name = name;
+        }
+
+        public int GetDeltaUp()
+        {
+            return deltaUp;
+        }
+
+        public void SetDeltaUp(int deltaUp)
+        {
+            this.deltaUp = deltaUp;
+        }
+
+        public int GetDeltaDown()
+        {
+            return deltaDown;
+        }
+
+        public void SetDeltaDown(int deltaDown)
+        {
+            this.deltaDown = deltaDown;
         }
     }
 }

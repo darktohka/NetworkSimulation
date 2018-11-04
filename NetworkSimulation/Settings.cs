@@ -213,14 +213,13 @@ namespace NetworkSimulation
             return floors.Count;
         }
 
-        public void RemoveGridObject(int floor, int x, int y)
+        public GridObject GetGridObject(int floor, int x, int y)
         {
             foreach (NetworkObject obj in objects)
             {
                 if (obj.GetFloor() == floor && obj.GetX() == x && obj.GetY() == y)
                 {
-                    RemoveObject(obj);
-                    break;
+                    return obj;
                 }
             }
 
@@ -228,31 +227,50 @@ namespace NetworkSimulation
             {
                 if (wall.GetFloor() == floor && wall.GetX() == x && wall.GetY() == y)
                 {
-                    RemoveWall(wall);
-                    break;
+                    return wall;
+                }
+            }
+
+            return null;
+        }
+
+        public void RemoveGridObject(int floor, int x, int y)
+        {
+            GridObject gridObj = GetGridObject(floor, x, y);
+
+            if (gridObj != null)
+            {
+                if (gridObj is NetworkObject)
+                {
+                    RemoveObject((NetworkObject)gridObj);
+                } else if (gridObj is Wall)
+                {
+                    RemoveWall((Wall)gridObj);
                 }
             }
         }
 
         public bool IsSpaceEmpty(int floor, int x, int y)
         {
-            foreach (NetworkObject obj in objects)
+            return GetGridObject(floor, x, y) == null;
+        }
+
+        public List<NetworkObject> GetConnectedObjects(int objectId)
+        {
+            List<NetworkObject> objs = new List<NetworkObject>();
+
+            foreach (NetworkCable cable in cables)
             {
-                if (obj.GetFloor() == floor && obj.GetX() == x && obj.GetY() == y)
+                if (cable.GetFromId() == objectId)
                 {
-                    return false;
+                    objs.Add(cable.GetTo());
+                } else if (cable.GetToId() == objectId)
+                {
+                    objs.Add(cable.GetFrom());
                 }
             }
 
-            foreach (Wall wall in walls)
-            {
-                if (wall.GetFloor() == floor && wall.GetX() == x && wall.GetY() == y)
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return objs;
         }
     }
 }

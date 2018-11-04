@@ -4,7 +4,6 @@ namespace NetworkSimulation
 {
     public class FloorLayout
     {
-        public int[,,] tiles;
         [JsonProperty("maxX")]
         private int maxX;
 
@@ -15,7 +14,6 @@ namespace NetworkSimulation
         {
             this.maxX = maxX;
             this.maxY = maxY;
-            tiles = new int[floor, maxX,maxY];
         }
         public void ScaleFloor(int x, int y)//WE NEED TO TAKE INPUT FROM THE USER SCALING IT
         {
@@ -41,17 +39,6 @@ namespace NetworkSimulation
         public void SetMaxY(int maxY)
         {
             this.maxY = maxY;
-        }
-        public bool IsOccupied(int x, int y)
-        {
-            //DETECT IF THERE IS A GRIDOBJECT ON THIS SQUARE
-            return tiles[x, y] >0;
-            
-        }
-        public bool IsEnclosed(int x, int y)
-        {
-            //DETECT IF THERE ARE WALLS ON 4 SIDES
-            return false;
         }
     }
 }

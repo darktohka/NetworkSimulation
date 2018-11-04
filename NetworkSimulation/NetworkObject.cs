@@ -1,9 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace NetworkSimulation
 {
@@ -55,6 +52,9 @@ namespace NetworkSimulation
         [JsonProperty("subnet")]
         private string subnet;
 
+        // Temporary variables
+        public ConnectionState connectionState;
+
         public NetworkObject(ObjectType objectType, int objectId, string name, int floor, int x, int y, string ipAddress, double uploadMbps, double downloadMbps, double throttledUploadMbps, double throttledDownloadMbps, int avgPingRate, int packetLossChance, int maxConnections, double uploadMbpsUsage, double downloadMbpsUsage, ComputerType computerType, bool wifiEnabled, double wifiRange, string subnet) : base(floor , x, y)
         {//MOST ARE USER INPUT THRU UI===WAKE UP DISYER
             this.objectType = objectType;
@@ -76,65 +76,94 @@ namespace NetworkSimulation
             this.subnet = subnet;
         }
 
-        public bool IsConnectedToInternet()
+        public void RecalculateTemporary()
+        {
+            connectionState = ConnectionState.DISCONNECTED;
+            IsConnectedToInternet();
+        }
+
+        public NetworkObject GetAssociatedRouter()
+        {
+            if (!wifiEnabled || (objectType != ObjectType.COMPUTER && objectType != ObjectType.WIFI_EXTENDER))
+            {
+                // No WIFI capability and not connected to any ethernet.
+                return null;
+            }
+
+            foreach (NetworkObject obj in Settings.GetSingleton().GetObjects())
+            {
+                if (obj.GetObjectType() == ObjectType.ROUTER || obj.GetObjectType() == ObjectType.WIFI_EXTENDER)
+                {
+                    if (DistanceTo(obj) <= obj.GetWifiRange())
+                    {
+                        return obj;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public ConnectionState GetConnectionState()
         {
             // TODO
             // Walk the graph, and see if we are connected to a modem.
             
             
-            UpdateStrength(); //UPDATE MBPS WHEN CONNECT - WE NEED TO FIGURE OUT EACH ACTION
-            // If not connected to a modem through the graph, check every router and wifi dropoff here!!!
+            // If connected to a modem, we have internet
             if (objectType == ObjectType.MODEM)
             {
-                return true;
+                return ConnectionState.CONNECTED_CABLE;
             }
-            foreach (NetworkObject i in Settings.GetSingleton().GetObjects())
-            {
-                if (i.GetObjectType == 3 || i.GetObjectType == 4)
-                    if (DistanceTo(i) <= i.GetWifiRange())
-                    {
 
-                        return true;
-                    }
-            }
-            // Walk the graph now!
-            if (!wifiEnabled)
+            int currentId = GetObjectId();
+            ObjectType currentType = GetObjectType();
+
+            while (currentId != -1)
             {
-                // No WIFI capability and not connected to any ethernet.
-                return false;
+                List<NetworkObject> objects = Settings.GetSingleton().GetConnectedObjects(currentId);
+                bool changed = false;
+
+                foreach (NetworkObject obj in objects) {
+                    ObjectType type = obj.GetObjectType();
+
+                    if (type == ObjectType.MODEM)
+                    {
+                        return ConnectionState.CONNECTED_CABLE;
+                    }
+                    if (type == ObjectType.HUB || type == ObjectType.SWITCH || type == ObjectType.POWERLINE)
+                    {
+                        currentId = obj.GetObjectId();
+                        currentType = obj.GetObjectType();
+                        changed = true;
+                        break;
+                    }
+                }
+
+                if (!changed)
+                {
+                    break;
+                }
             }
-            // Check all routers for dropoff!
-            return false;
+
+            // If there is an associated router, we are connected through WiFi
+            if (GetAssociatedRouter() != null)
+            {
+                return ConnectionState.CONNECTED_WIFI;
+            }
+
+            // Disconnected
+            return ConnectionState.DISCONNECTED;
         }
-        public void setID()
+
+        public bool IsConnectedToInternet()
         {
-            if (!isWall) layout.tiles[x, y] = GetObjectId();
-        }
-        public double UpStrength()
-        {
-            return newUpSpeed() * wifiCoeff;//KEVIN HAS FORMULA
-        }
-        public double DownStrength()
-        {
-            return newDownSpeed() * wifiCoeff;//KEVIN HAS FORMULA
-        }
-        public void UpdateStrength()
-        {
-            throttledUploadMbps = UpStrength();
-            throttledDownloadMbps = DownStrength();
-        }
-        public double newUpSpeed()//BILL MADE THIS
-        {
-            return uploadMbps * noise + deltaAct;
-        }
-        public double newDownSpeed()//BILL MADE THIS
-        {
-            return downloadMbps * noise + deltaAct;
+            return GetConnectionState() != ConnectionState.DISCONNECTED;
         }
 
         public double DistanceTo(NetworkObject other)//BILL MADE THIS
         {
-            return Math.sqrt(Math.pow(other.GetX() - GetX(), 2) + Math.pow(other.GetY() - GetY(), 2));
+            return Math.Sqrt(Math.Pow(other.GetX() - GetX(), 2) + Math.Pow(other.GetY() - GetY(), 2));
         }
         public ObjectType GetObjectType()
         {
