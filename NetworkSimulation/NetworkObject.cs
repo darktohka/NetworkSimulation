@@ -251,7 +251,12 @@ namespace NetworkSimulation
 
             if (throttledMbps <= 0)
             {
-                mbps = realMbps * 0.9;
+                mbps = realMbps;
+ 
+                if (GetObjectType() == ObjectType.COMPUTER)
+                {
+                    mbps *= 0.9;
+                }
             }
 
             if (connectionState == ConnectionState.CONNECTED_WIFI)
