@@ -145,6 +145,8 @@ namespace NetworkSimulation
                     label6.Show();
                     label7.Show();
                     label8.Show();
+                    label9.Show();
+                    textBox1.Show();
                     numericUpDown1.Show();
                     numericUpDown2.Show();
                     numericUpDown3.Show();
@@ -152,6 +154,7 @@ namespace NetworkSimulation
                     numericUpDown5.Show();
                     numericUpDown6.Show();
                     numericUpDown7.Show();
+                    textBox1.Text = networkObj.GetName();
                     z.Text = networkObj.GetObjectTypeName();
                     numericUpDown1.Value = (int)networkObj.uploadMbps;
                     numericUpDown2.Value = (int)networkObj.downloadMbps;
@@ -516,6 +519,18 @@ namespace NetworkSimulation
             gridObj.RemoveActionAt(actionsBox.SelectedIndex);
             actionsBox.Items.RemoveAt(actionsBox.SelectedIndex);
             Settings.SaveSettings();
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+            if (selectedPoint.X != -1)
+            {
+                NetworkObject gridObj = (NetworkObject)GetGridObj(selectedPoint.X, selectedPoint.Y);
+                gridObj.SetName(textBox1.Text);
+                Settings.SaveSettings();
+                groupBox2.Text = textBox1.Text;
+            }
         }
     }
 }
